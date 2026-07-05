@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Behind The Scene Collective — Shoot &amp; Edit</title>
 <meta name="description" content="BTS Collective — a small crew of video editors and content creators offering shoot and edit services with a bold, modern eye.">
+<link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+<link rel="apple-touch-icon" href="assets/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -88,8 +90,59 @@
     transition:opacity 0.2s ease;
   }
   .nav-links a:hover{opacity:1;}
+  .hamburger{
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    gap:5px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:8px;
+  }
+  .hamburger span{
+    width:22px;
+    height:2px;
+    background:var(--white);
+    border-radius:2px;
+    transition:transform 0.25s ease, opacity 0.25s ease;
+  }
+  .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .hamburger.active span:nth-child(2){opacity:0;}
+  .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  .mobile-menu{
+    position:fixed;
+    top:66px;
+    left:0;right:0;
+    background:var(--ink-soft);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    display:flex;
+    flex-direction:column;
+    padding:8px 32px 22px;
+    gap:6px;
+    transform:translateY(-10px);
+    opacity:0;
+    pointer-events:none;
+    transition:transform 0.25s ease, opacity 0.25s ease;
+    z-index:99;
+  }
+  .mobile-menu.open{
+    transform:translateY(0);
+    opacity:1;
+    pointer-events:auto;
+  }
+  .mobile-menu a{
+    font-weight:500;
+    font-size:1.05rem;
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .mobile-menu a:last-child{border-bottom:none;}
+
   @media (max-width:640px){
     .nav-links{display:none;}
+    .hamburger{display:flex;}
   }
 
   /* ---------- HERO ---------- */
@@ -209,20 +262,25 @@
   .filmstrip::before, .filmstrip::after{
     content:"";
     position:absolute;
-    top:0;bottom:0;
-    width:100%;
+    left:0;right:0;
+    height:26px;
     background-image:
       radial-gradient(circle, var(--ink) 42%, transparent 43%);
     background-size:26px 26px;
     background-position:center;
     opacity:0.9;
+    z-index:1;
   }
   .filmstrip::before{top:-13px;}
   .filmstrip::after{bottom:-13px;}
   .marquee-track{
+    position:relative;
+    z-index:2;
     display:flex;
     width:max-content;
     animation:scroll 22s linear infinite;
+    will-change:transform;
+    backface-visibility:hidden;
   }
   @media (prefers-reduced-motion: reduce){
     .marquee-track{animation:none;}
@@ -415,7 +473,7 @@
 <header>
   <nav>
     <div class="brand">
-      <img src="logo.jpg" alt="BTS Collective logo">
+      <img src="assets/logo.jpg" alt="BTS Collective logo">
       BTS COLLECTIVE
     </div>
     <div class="nav-links">
@@ -423,12 +481,20 @@
       <a href="#services">Services</a>
       <a href="#contact">Contact</a>
     </div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+  </div>
 </header>
 
 <section class="hero">
   <div class="wrap">
-    <img class="hero-logo" src="logo.jpg" alt="BTS Collective logo">
+    <img class="hero-logo" src="assets/logo.jpg" alt="BTS Collective logo">
     <span class="eyebrow">Shoot &amp; Edit Collective</span>
     <h1>We handle everything <span>behind the scene</span>, so your story looks effortless.</h1>
     <p class="lede">BTS Collective is a small crew of video editors turned vloggers and content creators. We shoot it, we cut it, you post it — bold, modern footage without the hassle of doing it yourself.</p>
@@ -512,7 +578,7 @@
       <div class="contact-details">
         <div class="contact-item">
           <div class="k">Email</div>
-          <div class="v">@Behindthescenescollective</div>
+          <div class="v">hello@yourdomain.com</div>
         </div>
         <div class="contact-item">
           <div class="k">Instagram</div>
@@ -520,7 +586,7 @@
         </div>
         <div class="contact-item">
           <div class="k">Based in</div>
-          <div class="v">Marikina City, Philippines</div>
+          <div class="v">Add your city here</div>
         </div>
       </div>
     </div>
@@ -535,6 +601,23 @@
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  hamburgerBtn.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburgerBtn.classList.toggle('active', isOpen);
+    hamburgerBtn.setAttribute('aria-expanded', isOpen);
+  });
+
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburgerBtn.classList.remove('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
 </script>
 
 </body>
